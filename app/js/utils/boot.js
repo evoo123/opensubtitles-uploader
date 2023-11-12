@@ -19,6 +19,7 @@ const Boot = {
         Boot.setupVersion();                // version number
         DragDrop.setup();                   // setup drag&drop
         Boot.checkReload();                 // are there values to restore?
+        Boot.trakt();                       // startup trakt
 
         // on app open, load file if used 'open with'
         Files.loadFile(gui.App.argv.slice(-1).pop());
@@ -26,6 +27,11 @@ const Boot = {
 
     // STARTUP: builds right click menu
     setupRightClicks: () => {
+        document.addEventListener('contextmenu', (ev) => {
+            // force stop default rightclick event
+            ev.preventDefault();
+        });
+
         const inputs = $('input[type=text], textarea');
         inputs.each((i) => {
             // right click event
@@ -37,13 +43,13 @@ const Boot = {
                 if ($(inputs[i]).attr('readonly')) {
                     // copy only on readonly fields
                     if (ev.target.value !== '') {
-                        menu = new Misc.contextMenu(null, i18n.__('Copy'), null, ev.target.id);
+                        menu = Misc.contextMenu(null, i18n.__('Copy'), null, ev.target.id);
                     } else {
                         return;
                     }
                 } else {
                     // cut-copy-paste on other
-                    menu = new Misc.contextMenu(i18n.__('Cut'), i18n.__('Copy'), i18n.__('Paste'), ev.target.id);
+                    menu = Misc.contextMenu(i18n.__('Cut'), i18n.__('Copy'), i18n.__('Paste'), ev.target.id);
                 }
                 // show our custom menu
                 menu.popup(ev.x, ev.y);
@@ -208,5 +214,12 @@ const Boot = {
 
         // lang dropdown
         Localization.setupDropdown();
+    },
+
+    trakt: () => {
+        TRAKT = new Trakt({
+            client_id: '1b267c94143610fe422532f9b91c858771f33427b1669610b5f802cee8518ea6',
+            client_secret: btoa('km·Õ·9ß½5ß^|õ­·÷½ýmÖøëV·Ýï[ëÍ´ïß_×w4k\x97üyÞ{{\x86üõÝ\x9B')
+        });
     }
 };

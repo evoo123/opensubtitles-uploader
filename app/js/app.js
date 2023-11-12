@@ -12,9 +12,12 @@ const spawn = require('child_process').spawn;
 const https = require('https');
 const crypt = require('crypto');
 const got = require('got');
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first'); // force ipv4 use for nodejs (see: https://forum.opensubtitles.org/viewtopic.php?f=8&t=17963)
 
 const i18n = require('i18n');
 const openSubtitles = require('opensubtitles-api');
+const Trakt = require('trakt.tv');
 const mi = require('mediainfo-wrapper');
 const detectLang = require('detect-lang');
 
@@ -23,6 +26,7 @@ const PKJSON = require('../package.json');
 const USERAGENT = 'OpenSubtitles-Uploader v' + PKJSON.version;
 
 let OS;
+let TRAKT;
 
 // setup window's content and start the app
 gui.start = () => {
